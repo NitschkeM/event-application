@@ -1,0 +1,243 @@
+﻿<!-- Rows must be placed within a .container (fixed-width) or .container-fluid (full-width) for proper alignment and padding. -->
+<div class="jumbotron profileJumbo">
+    <h2 class="h2">Your Profile</h2>
+</div>
+<div class="container body-content">
+
+    <!-- Container: SearchParams, DTPicker, Radio(gender), Map -->
+    <div class="container">
+        <div class="row">
+
+            <div>
+                <button class="btn btn-primary" ng-click="imgFormShow=!imgFormShow">imgFormShow</button>
+                <section id="imgUpload" ng-show="imgFormShow">
+                    <form name="uploadForm">
+                        <button class="btn btn-default" type="button" ng-model="file" name="uploadFile"
+                                ngf-multiple="true" ngf-select="true"
+                                ngf-accept="'image/*'" ngf-pattern="'image/*'"
+                                ngf-max-size="20MB" ngf-min-height="100"
+                                ngf-resize="{width: 750, height: 300}">
+                            Select
+                        </button>
+                        <!--<button class="btn btn-primary" type="button" ng-click="isDefault=!isDefault">isDefault</button>
+                        <p>isDefault: {{isDefault || 'Set isDefault!'}}</p>-->
+                        <button class="btn btn-success" type="submit" ng-click="upload(file)">Submit</button>
+                        <button class="btn btn-danger" ng-click="imgFormShow=false;">Cancel</button>
+                        <!--<div class="drop-box" ng-model="file" name="uploadDrop"
+                             ngf-multiple="false" ngf-drop="true" ngf-select="true"
+                             accept="image/*" ngf-pattern="'image/*'"
+                             ngf-max-size="20MB" ngf-min-height="80"
+                             ngf-resize="{width: 80, height: 80}"
+                             ngf-drag-over-class="'dragover'" ngf-allow-dir="true"
+                             ngf-change="fileDropped($file, $files, $event, $rejectedFiles)">
+                            Drop an image here or click to upload
+                        </div>-->
+                        <div ng-repeat="file in file"><img ngf-thumbnail="file || '/Client/assets/img/signup_male.png'"></div>
+                        <!--<img ngf-thumbnail="file || '/Client/assets/img/signup_male.png'" ngf-size="{width: 1000, height: 750, quality: 0.9}">-->
+                        <!-- ngf-no-file-drop: Cool, but not a good fallback -->
+                        <!--<div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>-->
+                        File:
+                        <p>{{file.name}} {{file.$error}} {{file.$errorParam}}</p>
+                        Upload Log:
+                        <pre>{{log}}</pre>
+                        <!--Username <input type="text" ng-model="username"><br /><br />-->
+                        <!--Files:
+                        <ul>
+                            <li ng-repeat="f in files" style="font:smaller">{{f.name}} {{f.$error}} {{f.$errorParam}}</li>
+                        </ul>-->
+                    </form>
+                </section>
+            </div>
+            <br />
+            <br />
+
+
+
+            <!-- SearchParams -->
+            <div class="col-md-2">
+                <div class="form-group minMaxBtns">
+                    <label>Age Min:</label>
+                    <input class="form-control" ng-model="searchParams.ageMin" />
+                    <label>Age Max:</label>
+                    <input class="form-control" ng-model="searchParams.ageMax" />
+                </div>
+                <div class="form-group minMaxBtns">
+                    <label>Part Min:</label>
+                    <input class="form-control" ng-model="searchParams.partMin" />
+                    <label>Part Max:</label>
+                    <input class="form-control" ng-model="searchParams.partMax" />
+                </div>
+            </div>
+            <!-- SearchParams - END -->
+            <!-- Column-md-4 -->
+            <div class="col-md-4">
+                <!-- DateTimePicker -->
+                <!--<div class="form-group">
+                    <label>Event Start:</label>
+                    <datetimepicker min-date="minDate"
+                                    hour-step="hourStep"
+                                    minute-step="minuteStep" ng-model="searchParams.eventStart" show-meridian="showMeridian"
+                                    date-format="{{format}}" date-options="dateOptions"
+                                    datepicker-append-to-body="false"
+                                    readonly-date="false"
+                                    hidden-time="false"
+                                    hidden-date="false"
+                                    name="datetimepicker"
+                                    show-spinners="true"
+                                    readonly-time="false"
+                                    date-opened="dateOpened">
+                    </datetimepicker>
+                </div>-->
+                <!-- DateTimePicker - END -->
+                <!-- RadioButtons: Gender  -->
+                <div class="btn-group">
+                    <label class="btn btn-primary" ng-model="searchParams.gender" uib-btn-radio="'male'">Male only</label>
+                    <label class="btn btn-primary" ng-model="searchParams.gender" uib-btn-radio="'female'">Female only</label>
+                    <label class="btn btn-primary" ng-model="searchParams.gender" uib-btn-radio="'all'">All</label>
+                </div>
+                <p>{{searchParams.gender}}</p>
+                <!-- RadioButtons: Gender END  -->
+                <!-- SearchField -->
+                <input type="text" class="form-control input-sm" ng-model="searchParams.search" placeholder="Search...">
+            </div>
+            <!-- Column-md-4 - END -->
+            <!-- Col-md-6 -->
+            <div class="col-md-6">
+                <!-- Map and Button -->
+                <button class="btn btn-success" ng-click="getPos()">To Current Position</button>
+                <div id="map" style="width:500px;height:380px;"></div>
+            </div>
+            <!-- Col-md-6 - END -->
+        </div>
+    </div>
+    <!-- Container: SearchParams, DTPicker, Radio(gender), Map - END -->
+    <br />
+    <br />
+    <hr />
+    <!-- Buttons: Refresh, New, Search -->
+    <div>
+        <button class="btn btn-primary" ng-click="refreshEvents()">Refresh</button>
+        <a ui-sref="create" class="btn btn-primary">New</a>
+        <button class="btn btn-primary" ng-click="search()">Search</button>
+    </div>
+    <!-- Buttons - END -->
+    <!-- Panel(list) -->
+    <div class="panel-body">
+        <uib-pagination ng-model="searchParams.page"
+                        total-items="listInfo.paging.totalItems"
+                        items-per-page="listInfo.paging.itemsPerPage"
+                        ng-change="selectPage()"
+                        max-size="10"
+                        rotate="false"
+                        boundary-links="true">
+        </uib-pagination>
+
+        <a href="" ng-click="sort('name')">Name</a>
+        <a href="" ng-click="sort('numberOfParticipants')">#Participants</a>
+        <a href="" ng-click="sort('gender')">Gender</a>
+        <a href="" ng-click="sort('ageMin')">AgeMin</a>
+        <a href="" ng-click="sort('ageMax')">AgeMax</a>
+        <a href="" ng-click="sort('eventStart')">EventStart</a>
+
+        <h3>listInfo.paging.totalItems: {{listInfo.paging.totalItems}}</h3>
+        <!-- List of events -->
+        <div class="panel panel-success text-center" ng-repeat="item in listInfo.events">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <strong>{{item.name}}</strong>
+                <a ui-sref="details({id: item.eventId})" class="btn btn-primary">
+                    Details
+                </a>
+                <button class="btn btn-xs btn-danger"
+                        ng-click="deleteEvent(item)">
+                    Delete
+                </button>
+
+                <a ui-sref="edit({id: item.eventId})" class="btn btn-xs btn-primary">
+                    Edit
+                </a>
+            </div>
+            <!-- Default panel contents - END -->
+            <!-- Table -->
+            <table class="table text-justify">
+                <thead>
+                    <tr class="bg-info">
+                        <th>Gender</th>
+                        <th>Participants</th>
+                        <th>Age</th>
+                        <th>From</th>
+                        <th>To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="bg-info">
+                        <td>{{item.gender}}</td>
+                        <td><strong>Current:</strong> {{item.numberOfParticipants}} <strong>Max:</strong> {{item.partMax}}</td>
+                        <td><strong>{{item.ageMin}} - {{item.ageMax}} Years Old</strong></td>
+                        <td>{{item.eventStart | date:'EEEE, MMMM d, HH:mm'}}</td>
+                        <td>{{item.eventEnd | date:'EEEE, MMMM d, HH:mm'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Table - END -->
+            <div class="panel-body bg-info">
+                <p>{{item.shortDescription}}</p>
+            </div>
+        </div>
+        <!-- List of events - END -->
+        <uib-pagination ng-model="searchParams.page"
+                        total-items="listInfo.paging.totalItems"
+                        items-per-page="listInfo.paging.itemsPerPage"
+                        ng-change="selectPage()"
+                        max-size="10"
+                        rotate="false"
+                        boundary-links="true">
+        </uib-pagination>
+
+    </div>
+    <!-- Panel(list) - END -->
+    <!-- UserSearchInput -->
+    <div>
+        <div class="input-group">
+            <input type="text" class="form-control input-sm" ng-model="userId" placeholder="userId...">
+            <button class="btn btn-xs btn-info" ng-click="getById(userId)">findUserById</button>
+        </div>
+        <div class="input-group">
+            <input type="text" class="form-control input-sm" ng-model="userName" placeholder="userName...">
+            <button class="btn btn-xs btn-info" ng-click="getByName(userName)">findUserByName</button>
+        </div>
+        <div class="input-group">
+            <input type="text" class="form-control input-sm" ng-model="queryObj.ageMin" placeholder="ageMin...">
+            <input type="text" class="form-control input-sm" ng-model="queryObj.ageMax" placeholder="ageMax...">
+            <button class="btn btn-xs btn-info" ng-click="queryUsers()">queryUsers</button>
+        </div>
+        <button class="btn btn-xs btn-danger" ng-click="getAllUsers()">getAllUsers</button>
+    </div>
+    <!-- UserSearchInput - END -->
+    <!-- UserList-->
+    <table class="table table-striped table-bordered table-hover table-condensed">
+        <thead>
+            <tr>
+                <!-- Sorting not implemented -->
+                <th><a href="" ng-click="sort('username')">Username</a></th>
+                <th><a href="" ng-click="sort('email')">Email</a></th>
+                <th><a href="" ng-click="sort('dateOfBirth')">DateOfBirth</a></th>
+                <th><a href="" ng-click="sort('gender')">Gender</a></th>
+                <th></th>
+                <th><a href="" ng-click="sort('id')">Id</a></th>
+            </tr>
+        </thead>
+        <!-- *****ADD PAGING AT SOME POINT****** -->
+        <tbody>
+            <tr ng-repeat="user in users">
+                <td>{{user.userName}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.dateOfBirth | date:'mediumDate'}}</td>
+                <td>{{user.gender}}</td>
+                <td><button class="btn btn-xs btn-danger" ng-click="deleteUser(user)">Delete</button></td>
+                <td>{{user.id}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- UserList - END -->
+</div>

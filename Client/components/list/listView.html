@@ -1,0 +1,103 @@
+﻿<!-- Main Row -->
+<div class="row">
+    <!-- LeftSide: Col-sm-2 well -->
+    <div class="col-sm-3 listLeftCol">
+        <!-- Dropdown: Number of elements in pager -->
+        <section class="btn-group" uib-dropdown keyboard-nav>
+            <button id="simple-btn-keyboard-nav" type="button" class="btn btn-primary btn-sm" uib-dropdown-toggle>Events Per Page <span class="caret"></span></button>
+            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="simple-btn-keyboard-nav">
+                <li role="menuitem"><a ng-click="setPageSize(5)">5</a></li>
+                <li role="menuitem"><a ng-click="setPageSize(10)">10</a></li>
+                <li role="menuitem"><a ng-click="setPageSize(15)">15</a></li>
+                <li role="menuitem"><a ng-click="setPageSize(20)">20</a></li>
+                <li role="menuitem"><a ng-click="setPageSize(20)">?InfiniteListHere?</a></li>
+            </ul>
+        </section>
+        <br />
+        <!-- Sort button group -->
+        <label>Sort Events By: </label>
+        <section>
+            <!-- WHY: Are these <a>'s? They don't navigate! They are <buttons>?  -->
+            <div class="btn-group-sm orderByBtns">
+                <a href="" type="button" class="btn btn-success" ng-click="sort('eventStart')"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> Event Start Time</a>
+                <a href="" type="button" class="btn btn-danger" ng-click="sort('currentPartic')"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Number Of Participants</a>
+                <a href="" type="button" class="btn btn-default" ng-click="sort('ageMin')">Maximum Age</a>
+                <a href="" type="button" class="btn btn-default" ng-click="sort('ageMax')">Minimum Age</a>
+                <a href="" type="button" class="btn btn-info" ng-click="sort('name')">Event Name</a>
+                <a href="" type="button" class="btn btn-primary" ng-click="sort('gender')">Gender</a>
+            </div>
+        </section>
+    </div>
+    <!-- LeftSide: Col-sm-2 well  - END -->
+    <!-- Middle: Col-sm-8 -->
+    <div class="col-sm-9 listMiddleCol">
+        <!--<section ng-if="authentication.isAuth">
+            <p>Show only events you can attend?</p>
+            <button class="btn btn-primary" type="button" ng-click="eligibleOnly(true)" ng-class="{'btn-success':defaultObj.searchParams.eligibleOnly}">Yes Please!</button>
+            <button class="btn btn-primary" type="button" ng-click="eligibleOnly(false)" ng-class="{'btn-success':!defaultObj.searchParams.eligibleOnly}">No Thanks.</button>
+        </section>-->
+        <!-- RadioButtons: EligibleOnly -->
+        <section ng-if="authentication.isAuth">
+            <p>Show only events you can attend?</p>
+            <div class="btn-group">
+                <label class="btn btn-primary" ng-model="defaultObj.searchParams.eligibleOnly" ng-change="eligibleOnly()" uib-btn-radio="true" ng-class="{'btn-success':defaultObj.searchParams.eligibleOnly}">Yes Please!</label>
+                <label class="btn btn-primary" ng-model="defaultObj.searchParams.eligibleOnly" ng-change="eligibleOnly()" uib-btn-radio="false" ng-class="{'btn-success':!defaultObj.searchParams.eligibleOnly}">No Thanks.</label>
+            </div>
+        </section>
+        <section id="resultMessage" ng-show="listInfo.paging.totalItems">
+            Found: {{listInfo.paging.totalItems}} Events
+        </section>
+        <div class="listMiddleCol2">
+
+            <!-- Pagination -->
+            <uib-pagination ng-model="listInfo.paging.page "
+                            total-items="listInfo.paging.totalItems"
+                            items-per-page="listInfo.paging.itemsPerPage"
+                            ng-change="selectPage()"
+                            max-size="10"
+                            rotate="false"
+                            boundary-links="true">
+            </uib-pagination>
+
+            <!-- Events Repeat Panel -->
+            <div class="panel panel-primary eventPanel" ng-repeat="item in listInfo.events">
+                <a class="panel-heading" ui-sref="details({id: item.eventId})">
+                    <h3 class="panel-title" ng-bind="::item.name"><span class="glyphicon glyphicon-info-sign" aria-hidden="true" ng-show="item.approvalReq"></span></h3>
+                </a>
+                <div class="panel-body row">
+                    <section class="col-sm-3 hidden-xs">
+                        <img ng-src="{{::item.imageUrl}}" class="img-responsive" width="106" height="106" alt="Description" />
+                        <!--<img ng-src="/Client/assets/img/signup_male.png" class="img-responsive" width="106" height="106" alt="Description" />-->
+                    </section>
+                    <section class="col-sm-7 col-xs-7">
+                        <div id="onDetailsGender" ng-switch on="item.gender">
+                            <p ng-switch-when="male">Male Only</p>
+                            <p ng-switch-when="female">Female Only</p>
+                            <p ng-switch-default></p>
+                        </div>
+                        <div><strong>Age:</strong>{{::item.ageMin}}<strong> - </strong> {{::item.ageMax}}</div>
+                        <div><strong>Participants:</strong> {{::item.currentPartic}} (Max: {{::item.partMax}})</div>
+                        <div><strong>Pending:</strong> {{::item.currentPending}}</div>
+
+                    </section>
+                    <section class="col-sm-2 col-xs-5">
+                        <p id="panelDay">{{::item.eventStart | date:'EEEE'}}</p>
+                        <p id="panelTime">{{::item.eventStart | date:'HH:mm'}}</p>
+                        <p id="panelMonth">{{::item.eventStart | date:'MMMM d'}}</p>
+                    </section>
+                </div>
+            </div>
+            <!-- Pagination2 -->
+            <uib-pagination ng-model="listInfo.paging.page "
+                            total-items="listInfo.paging.totalItems"
+                            items-per-page="listInfo.paging.itemsPerPage"
+                            ng-change="selectPage()"
+                            max-size="10"
+                            rotate="false"
+                            boundary-links="true">
+            </uib-pagination>
+        </div>
+
+    </div>
+</div>
+<!-- Main Row - END -->

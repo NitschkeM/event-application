@@ -1,0 +1,45 @@
+﻿
+<!-- *****Add novalidate?***** -->
+<div class="container body-content">
+    <form class="form-login" role="form">
+        <h2 class="form-login-heading">Sign up</h2>
+        <input type="text" class="form-control" placeholder="Username" data-ng-model="registration.userName" required autofocus>
+        <input type="password" class="form-control" placeholder="Password" data-ng-model="registration.password" required>
+        <input type="password" class="form-control" placeholder="Confirm Password" data-ng-model="registration.confirmPassword" required>
+        <div data-ng-hide="message == ''" data-ng-class="(savedSuccessfully) ? 'alert alert-success' : 'alert alert-danger'">
+            {{message}}
+        </div>
+
+
+        <datetimepicker min-date="minDate"
+                        hour-step="hourStep"
+                        minute-step="minuteStep" ng-model="registration.dateOfBirth" show-meridian="showMeridian"
+                        date-format="{{format}}" date-options="dateOptions"
+                        datepicker-append-to-body="false"
+                        readonly-date="false"
+                        hidden-time="true"
+                        hidden-date="false"
+                        name="registerDatepicker"
+                        show-spinners="true"
+                        readonly-time="false"
+                        date-opened="dateOpened">
+        </datetimepicker>
+        <br />
+        <br />
+        <!-- FIX CHECKBOXES, HACKING NOW (was weird on both required) -->
+        <label>
+            Male:
+            <input name="userMale" type="radio" value="male" ng-model="registration.gender" />
+        </label>
+        <label>
+            Female:
+            <input name="userFemale" type="radio" value="female" ng-model="registration.gender" />
+        </label>
+        <div class="form-group">
+            <label>Email: </label>
+            <input name="userEmail" type="email" class="form-control" required ng-model="registration.email" />
+        </div>
+
+        <button class="btn btn-lg btn-info btn-block" type="submit" data-ng-click="signUp()">Submit</button>
+    </form>
+</div>

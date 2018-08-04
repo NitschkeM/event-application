@@ -1,0 +1,57 @@
+﻿<!-- MODAL -->
+<div>
+    <div class="modal-header">
+        <h3 class="modal-title">Participants</h3>
+    </div>
+
+    <div class="modal-body particModal">
+        <div ng-repeat="user in partic.participants">
+            <section class="media">
+                <div class="media-left"><img ng-src="{{user.imageUrl}}" height="80" width="80" alt="Description"></div>
+                <div class="media-body">
+                    <div>
+                        <h4 class="media-heading">{{user.userName}}</h4>
+                        <button class="btn btn-xs btn-success" ng-show="partic.userRship === 'creator'" ng-click="partic.creatorAction(user, 'remove')">Remove</button>
+                        <button class="btn btn-sm btn-default" ng-hide="showInfo" ng-click="showInfo=!showInfo">See more</button>
+                        <button class="btn btn-sm btn-warning" ng-show="showInfo" ng-click="showInfo=!showInfo">See less</button>
+                    </div>
+                    <p ng-show="showInfo">{{user.aboutMe}}</p>
+                    <p ng-show="showInfo" style="float:right; text-transform:capitalize;">{{user.gender}}, {{user.dateOfBirth | date: 'MMM d, y'}}</p>
+                </div>
+            </section>
+        </div>
+        <div ng-repeat="user in partic.pending">
+            <section class="media">
+                <div class="media-left"><img ng-src="{{user.imageUrl}}" height="80" width="80" alt="Description"></div>
+                <div class="media-body">
+                    <div>
+                        <h4 class="media-heading">{{user.userName}} (pending)</h4>
+                        <button class="btn btn-xs btn-danger" ng-show="partic.userRship === 'creator'" ng-click="partic.creatorAction(user, 'reject')">Reject</button>
+                        <button class="btn btn-xs btn-success" ng-show="partic.userRship === 'creator'" ng-click="partic.creatorAction(user, 'accept')">Accept</button>
+                        <button class="btn btn-sm btn-default" ng-hide="showInfo" ng-click="showInfo=!showInfo">See more</button>
+                        <button class="btn btn-sm btn-warning" ng-show="showInfo" ng-click="showInfo=!showInfo">See less</button>
+                    </div>
+                    <p ng-show="showInfo">{{user.aboutMe}}</p>
+                    <p ng-show="showInfo" style="float:right; text-transform:capitalize;">{{user.gender}}, {{user.dateOfBirth | date: 'MMM d, y'}}</p>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">Close</button>
+        <!--<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>-->
+    </div>
+</div>
+
+
+    <!-- MODAL SCOPE TEST -->
+<!--<section ng-repeat="user in participants">
+    <p>{{user.userName}}</p>
+    <button class="btn btn-xs btn-danger" ng-click="remove(user)">Remove</button>
+</section>-->
+
+
+

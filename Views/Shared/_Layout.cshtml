@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html ng-app="eventApp">
+<head>
+    <meta charset="utf-8" />
+    @*<meta name="viewport" content="width=device-width, initial-scale=1.0"> - device-width is enough, initial may cause iOS bug (2012, wilson, lynda)*@
+    <meta name="viewport" content="width=device-width">
+    @*<base href="/Home/Index/">*@
+    @* Problem with / : can't reload page bascily, gets not found because it attempts to get /list, without home/index  *@
+    <base href="/">
+
+    <title>My Event Application</title>
+
+    @* bootstrap and bsTheme **NOTE: You can probably remove bootstrap-theme.css** *@
+    @*<link href="~/Client/assets/libs/bootstrap/css/bootstrap.css" rel="stylesheet" />
+        <link href="~/Client/assets/libs/bootstrap/css/bootstrap-theme.css" rel="stylesheet" />*@
+
+
+    @* inlineEdit, dateTimePicker, loadingBar, ng-img-crop *@
+    <link href="~/Client/assets/libs/angular/xeditable/xeditable.css" rel="stylesheet" type="text/css" />
+    @*<link href="https://cdn.rawgit.com/zhaber/datetimepicker/master/datetimepicker.css" type="text/css" rel="stylesheet">*@ @*DT-Picker: Zhaber*@
+    <link href="~/Client/assets/libs/angular/loading-bar/loading-bar.css" rel="stylesheet" />
+    @*<link href="~/Client/assets/libs/angular/ng-img-crop/ng-img-crop.css" rel="stylesheet" />*@
+    @* Styles *@
+    <link href="~/Client/assets/css/styles.css" rel="stylesheet" />
+    @* Just angular, in head for improved functionality of ng-cloak *@
+    <script src="~/Scripts/angular.js"></script>
+    @* Web essentials wanted this (below, description) *@
+    <meta name="description" content="The description of my page" />
+</head>
+
+<body ng-controller="defaultCtrl">
+
+    @* from tutorial indexView *@
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" ui-sref="mainParent.frontpage">Looking For Group</a>
+                <button class="btn btn-success navbar-toggle" ng-click="navbarExpanded = !navbarExpanded">
+                    @*<span class="glyphicon glyphicon-chevron-down"></span>*@
+                    <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse" uib-collapse="!navbarExpanded">
+                <ul class="nav navbar-nav">
+                    <li><a ui-sref="mainParent.frontpage">Info</a></li>
+                    <li><a ui-sref="mainParent.frontpage">Contact</a></li>
+                    <li><a ui-sref="mainParent.frontpage">AbsPos BugRep Somewhere?</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @*<li ng-hide="!authentication.isAuth"><a ui-sref="list">Find Events</a></li>
+                        <li ng-hide="!authentication.isAuth"><a ui-sref="userList">My Events</a></li>*@
+                    @* *************SHOULD: onLogout, redirect via logout() function, not ui-sref. ("What if unsuccessfull")*********** *@
+                    <li ng-hide="!authentication.isAuth"><a ui-sref="profile"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Welcome {{authentication.userName}}</a></li>
+                    <li ng-hide="!authentication.isAuth"><a ui-sref="mainParent.frontpage" ng-click="logOut()"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Logout</a></li>
+                    <li ng-hide="authentication.isAuth"> <a ui-sref="login"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Login</a></li>
+                    <li ng-hide="authentication.isAuth"> <a ui-sref="signup"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Sign Up</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div>
+        @RenderBody()
+    </div>
+
+
+
+
+    @* compatability libs? *@
+    <script src="~/scripts/modernizr-2.8.3.js"></script>
+    <script src="~/scripts/respond.js"></script>
+
+    @* google maps *@
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBFMOnZho4k5dRRyzosxroxsVDh4gHjE8Q"></script>
+
+    @* angular 3'rd party libs "official" *@
+    <script src="~/scripts/angular-ui-router.js"></script>
+    <script src="~/scripts/angular-resource.js"></script>     @* Remove this *@
+    <script src="~/scripts/angular-animate.js"></script>
+    <script src="~/scripts/angular-ui/ui-bootstrap-tpls.js"></script>
+
+    @* angular 3'rd party libs less "official" *@
+    <script src="~/Client/assets/libs/angular/dt-picker-gillardo/datetime-picker.js"></script> @*DT-Picker: Gillardo*@ 
+    @*<script src="https://cdn.rawgit.com/zhaber/datetimepicker/master/datetimepicker.js"></script>*@ @*DT-Picker: Zhaber*@
+    <script src="~/Client/assets/libs/angular/xeditable/xeditable.js"></script>
+    <script src="~/Client/assets/libs/angular/loading-bar/loading-bar.js"></script>
+    <script src="~/Client/assets/libs/angular/angular-local-storage.js"></script>
+    <script src="~/scripts/ng-file-upload-shim.js"></script> @* For no html5 browser support *@
+    <script src="~/scripts/ng-file-upload.js"></script>
+    @*<script src="~/Client/assets/libs/angular/ng-img-crop/ng-img-crop.js"></script>*@
+
+    @* app, route, authModule, uploadModule *@
+    <script src="~/Client/eventApp.js"></script>
+    <script src="~/Client/eventApp_route.js"></script>
+    <script src="~/Client/authModule/authApp.js"></script>
+    @*<script src="~/Client/fileUploadModule/uploadApp.js"></script>*@
+
+    @* Services *@
+    <script src="~/Client/services/eventsResource.js"></script>
+    <script src="~/Client/authModule/services/authInterceptorService.js"></script>
+    <script src="~/Client/authModule/services/authService.js"></script>
+    <script src="~/Client/services/eventsService.js"></script>
+    <script src="~/Client/services/usersService.js"></script>
+
+    @* Controllers *@
+    <script src="~/Client/defaultCtrl.js"></script>                                 @* Default *@
+
+    <script src="~/Client/authModule/controllers/signupCtrl.js"></script>           @* SignUp *@
+    <script src="~/Client/authModule/controllers/loginCtrl.js"></script>            @* Login *@
+
+    <script src="~/Client/components/frontpage/frontPageCtrl.js"></script>          @* Frontpage *@
+    <script src="~/Client/components/list/listCtrl.js"></script>                    @* List *@
+    <script src="~/Client/components/userSpecific/userListCtrl.js"></script>        @* UserList *@
+    <script src="~/Client/components/edit/editCtrl.js"></script>                    @* Edit *@
+    <script src="~/Client/components/details/detailsCtrl.js"></script>              @* Details *@
+    <script src="~/Client/components/userSpecific/profileCtrl.js"></script>         @* Profile *@
+    <script src="~/Client/components/about_contact/aboutContactCtrl.js"></script>   @* About_Contact *@
+    <script src="~/Client/components/list/mapModalCtrl.js"></script>                @* Map Modal *@
+    <script src="~/Client/components/list/advSearchCtrl.js"></script>               @* Advanced Search Modal *@  
+    <script src="~/Client/components/details/particModalCtrl.js"></script>         @* Participant Modal *@
+    @*<script src="~/Client/fileUploadModule/uploadCtrl.js"></script>*@                 @* Upload *@
+    <script src="~/Client/components/admin/adminCtrl.js"></script>                  @* Admin *@
+
+
+</body>
+
+</html>

@@ -1,0 +1,71 @@
+﻿<!-- Jumbotron Note: Inside container to NOT extent to edge of screen. Outisde to. . .  -->
+<div class="jumbotron mainJumbo">
+    <div class="container-fluid text-center">
+        <h1>Looking For Group</h1>
+        <div class="naviGroup">
+            <a class="createNavi" ui-sref="mainParent.create" ui-sref-active="naviActive" ng-click="reflowObj.forceReflow()">Create Event</a>
+            <a class="findNavi" ui-sref="mainParent.list" ui-sref-active="naviActive" ng-click="reflowObj.forceReflow()">Find Events</a>
+            <a class="myNavi" ui-sref="mainParent.userList" ui-sref-active="naviActive" ng-click="reflowObj.forceReflow()">My Events</a>
+
+            <div id="jumboTextCreate" ng-if="currentPath === '/main/frontpage'">
+                <p>Create your own event</p>
+            </div>
+            <div id="jumboTextFind" ng-if="currentPath === '/main/frontpage'">
+                <p>Search for events in an area of your choice.</p>
+                <p>Modify the search to find events matching your interests</p>
+            </div>
+            <div id="jumboTextMy" ng-if="currentPath === '/main/frontpage'">
+                <p>Overview of events you have created or attended.</p>
+            </div>
+            <div id="jumboTextGeneral" ng-if="currentPath === '/main/frontpage'">
+                <p>Welcome!</p>
+                <p>Click any of the above options to get started.</p>
+            </div>
+            <!--<div id="jumboTextCreate" ng-show="currentPath === '/main/frontpage'">
+                <p>Create your own event</p>
+            </div>
+            <div id="jumboTextFind" ng-show="currentPath === '/main/frontpage'">
+                <p>Search for events in an area of your choice.</p>
+                <p>Modify the search to find events matching your interests</p>
+            </div>
+            <div id="jumboTextMy" ng-show="currentPath === '/main/frontpage'">
+                <p>Overview of events you have created or attended.</p>
+            </div>
+            <div id="jumboTextGeneral" ng-show="currentPath === '/main/frontpage'">
+                <p>Welcome!</p>
+                <p>Click any of the above options to get started.</p>
+            </div>-->
+        </div>
+
+        <!-- list -->
+        <div class="jumboBtns" ng-show="currentPath === '/main/list'">
+            <button id="filterBtn" ng-click="defaultObj.searchModal.open('lg')">Filters</button>
+            <button id="mapBtn" ng-click="defaultObj.mapModal.open('md')">Location</button>
+        </div>
+        <!-- userList -->
+        <div class="jumboBtns" ng-show="currentPath === '/main/userList'">
+            <button id="futureBtn" ng-click="defaultObj.getFuture()">Future Events</button>
+            <button id="pastBtn" ng-click="defaultObj.getPast()">Past Events</button>
+        </div>
+        <!-- create -->
+        <!--<div class="jumboBtns" ng-show="currentPath === '/main/create'">
+            <button id="saveBtn" ng-click="defaultObj.saveEdit(defaultObj.currentEvent, defaultObj.file)">Save</button>
+            <button id="cancelBtn" ng-click="defaultObj.cancelEdit()">Cancel</button>
+        </div>-->
+        <!-- edit -->
+        <!--<div class="jumboBtns" ng-show="currentPath === '/main/edit'">
+            <button id="saveBtn" ng-click="defaultObj.saveEdit(defaultObj.currentEvent, file)">Save</button>
+            <button id="cancelBtn" ng-click="defaultObj.cancelEdit()">Cancel</button>
+        </div>-->
+    </div>
+</div>
+<!-- Jumbotron - END -->
+<div class="container body-content text-center">
+    <div class="row">
+        <div class="col-sm-10">
+            <ui-view />
+        </div>
+        <!-- Right: Col-sm-2 -->
+        <div class="col-sm-2 well"><div class="well"><p>ADS</p></div><div class="well"><p>ADS</p></div><div class="well"><p>ADS</p></div><div class="well"><p>ADS</p></div><div class="well"><p>ADS</p></div><div class="well"><p>ADS</p></div></div>
+    </div>
+</div>

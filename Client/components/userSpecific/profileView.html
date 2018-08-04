@@ -1,0 +1,140 @@
+﻿<!-- Jumbotron Note: Inside container to NOT extent to edge of screen. Outside to. . .  -->
+<div class="jumbotron profileJumbo">
+    <h2 class="h2">Your Profile</h2>
+</div>
+
+<div class="body-content container">
+    <div class="row profileRow">
+        <div class="col-sm-3">
+            <section class="navOrBack">
+                <p>Maybe frontpage Nav only here</p>
+                <a ui-sref="mainParent.list" class="btn btn-default">Find Events</a>
+                <a ui-sref="mainParent.userList" class="btn btn-default">My Events</a>
+            </section>
+            <section class="profileEdit">
+                <button class="btn btn-default" ng-click="imgFormShow=true;">Change Profile Picture</button>
+                <button class="btn btn-default" ng-click="editAboutForm.$show()">Change description</button>
+                <button class="btn btn-default">Change Password</button>
+            </section>
+        </div>
+        <div class="col-sm-7">
+            <section class="media">
+                <div class="media-left">
+                    <div ng-hide="imgFormShow"><img ng-src="{{userInfo.imageUrl}}" height="80" width="80" alt="Description"></div>
+                    <div ng-show="imgFormShow"><img ngf-thumbnail="file || '/Client/assets/img/signup_male.png'" ngf-size="{width: 80, height: 80, quality: 0.9}"></div>
+                </div>
+                <div class="media-body">
+                    <div>
+                        <h4 class="media-heading">{{userInfo.userName}}</h4>
+                    </div>
+                    <!--<p>{{userInfo.aboutMe}}</p>-->
+
+                    <form editable-form name="editAboutForm" onbeforesave="editAbout($data)">
+                        <div class="commentText" editable-textarea="userInfo.aboutMe" e-name="aboutText" e-form="editAboutForm" e-required>{{userInfo.aboutMe}}</div>
+                        <!-- Save/Cancel Edit Buttons: Show on rowform.$visible -->
+                        <div ng-show="editAboutForm.$visible" style="float:right">
+                            <button type="submit" ng-disabled="editAboutForm.$waiting" class="btn btn-default">Save</button>
+                            <button type="button" ng-disabled="editAboutForm.$waiting" ng-click="editAboutForm.$cancel()" class="btn btn-warning">Cancel</button>
+                        </div>
+                    </form>
+
+                    <p style="float:right; text-transform:capitalize;">{{userInfo.gender}}, {{userInfo.dateOfBirth | date: 'MMM d, y'}}</p>
+                </div>
+            </section>
+
+
+            <section id="imgUpload" ng-show="imgFormShow">
+                <form name="uploadForm">
+                    <button class="btn btn-default" type="button" ng-model="file" name="uploadFile"
+                            ngf-multiple="false" ngf-select="true"
+                            ngf-accept="'image/*'" ngf-pattern="'image/*'"
+                            ngf-max-size="20MB" ngf-min-height="100"
+                            ngf-resize="{width: 80, height: 80}">
+                        Select
+                    </button>
+                    <button class="btn btn-success" type="submit" ng-click="upload(file)">Submit</button>
+                    <button class="btn btn-danger" ng-click="imgFormShow=false;">Cancel</button>
+                    <div class="drop-box" ng-model="file" name="uploadDrop"
+                         ngf-multiple="false" ngf-drop="true" ngf-select="true"
+                         accept="image/*" ngf-pattern="'image/*'"
+                         ngf-max-size="20MB" ngf-min-height="80"
+                         ngf-resize="{width: 80, height: 80}"
+                         ngf-drag-over-class="'dragover'" ngf-allow-dir="true"
+                         ngf-change="fileDropped($file, $files, $event, $rejectedFiles)">
+                        Drop an image here or click to upload
+                    </div>
+                    <!--<img ngf-thumbnail="file || '/Client/assets/img/signup_male.png'" ngf-size="{width: 80, height: 80, quality: 0.9}">-->
+                    <!-- ngf-no-file-drop: Cool, but not a good fallback -->
+                    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+                    File:
+                    <p>{{file.name}} {{file.$error}} {{file.$errorParam}}</p>
+                    Upload Log:
+                    <pre>{{log}}</pre>
+                    <!--Username <input type="text" ng-model="username"><br /><br />-->
+                    <!--Files:
+                    <ul>
+                        <li ng-repeat="f in files" style="font:smaller">{{f.name}} {{f.$error}} {{f.$errorParam}}</li>
+                    </ul>-->
+                </form>
+            </section>
+        </div>
+        <div class="col-sm-2 well"><div class="well"><p>ADS</p></div><div class="well"><p>ADS</p></div><div class="well"><p>ADS</p></div><div class="well"><p>ADS</p></div><div class="well"><p>ADS</p></div><div class="well"><p>ADS</p></div></div>
+    </div>
+</div>
+<!-- ******************************************************************************************************************************************************* -->
+<!-- ******************************************************************************************************************************************************* -->
+<!--ng-model The model value will be a single file instead of an array if all of the followings are true:
+    ngf-multiple is not set or is resolved to false.
+    multiple attribute is not set on the element.
+    ngf-keep is not set or is resolved to false.-->
+<!-- ******************************************************************************************************************************************************* -->
+<!-- ******************************************************************************************************************************************************* -->
+<!--*ngf-capture="'camera'" or "'other'"   // allows mobile devices to capture using camera (ngf-select only) -->
+<!--+ngf-hide-on-drop-not-available="boolean" // default false, hides element if file drag&drop is not (ngf-drop only) -->
+<!--+ngf-enable-firefox-paste="boolean" // *experimental* default false, enable firefox image paste by making element contenteditable (ngf-drop only) -->
+<!-- ******************************************************************************************************************************************************* -->
+<!-- ******************************************************************************************************************************************************* -->
+<!--ngf-resize="{width: 100, height: 100, quality: .8, type: 'image/jpeg',
+    ratio: '1:2', centerCrop: true, pattern='.jpg', restoreExif: false}"
+    or resizeOptions() // a function returning a promise which resolves into the options.
+    // resizes the image to the given width/height or ratio. Quality is optional between 0.1 and 1.0),
+    // type is optional convert it to the given image type format.
+    // centerCrop true will center crop the image if it does not fit within the given width/height or ratio.
+    // centerCrop false (default) will not crop the image and will fit it within the given width/height or ratio
+    // so the resulting image width (or height) could be less than given width (or height).
+    // pattern is to resize only the files that their name or type matches the pattern similar to ngf-pattern.
+    // restoreExif boolean default true, will restore exif info on the resized image.-->
+<!-- ******************************************************************************************************************************************************* -->
+<!-- ******************************************************************************************************************************************************* -->
+<!--ngf-validate="{size: {min: 10, max: '20MB'}, width: {min: 100, max:10000}, height: {min: 100, max: 300}
+              ratio: '2x1', duration: {min: '10s', max: '5m'}, pattern: '.jpg'}"
+              // shorthand form for above validations in one place.-->
+<!-- ******************************************************************************************************************************************************* -->
+<!-- ******************************************************************************************************************************************************* -->
+<!--// filter to convert the file to base64 data url.
+    <a href="file | ngfDataUrl">image</a>-->
+<!-- ******************************************************************************************************************************************************* -->
+<!-- ******************************************************************************************************************************************************* -->
+<!--<section id="imgForm" ng-show="imgFormShow">
+    <form name="myForm">
+        <div>Crop Image and Upload</div>
+
+        <button class="btn btn-success" ngf-select ng-model="picFile" accept="image/*">Select Picture</button>
+        <button class="btn btn-default" ng-click="upload(croppedDataUrl, picFile.name)">Submit</button>
+        <button class="btn btn-danger" ng-click="imgFormShow=false;">Cancel</button>
+
+        <div ngf-drop ng-model="picFile" ngf-pattern="image/*" class="cropArea">
+            <img-crop image="picFile  | ngfDataUrl" result-image="croppedDataUrl" ng-init="croppedDataUrl=''"></img-crop>
+        </div>
+        <div>
+            <img ng-src="{{croppedDataUrl}}" />
+        </div>
+        <span class="progress" ng-show="progress >= 0">
+            <div style="width:{{progress}}%" ng-bind="progress + '%'"></div>
+        </span>
+        <span ng-show="result">Upload Successful</span>
+        <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
+    </form>
+</section>-->
+<!-- ******************************************************************************************************************************************************* -->
+<!-- ******************************************************************************************************************************************************* -->

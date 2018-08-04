@@ -1,0 +1,298 @@
+﻿<div class="advancedSearch">
+    <div class="modal-header">
+        <h3 class="modal-title">Advanced Search</h3>
+    </div>
+    <div class="modal-body row">
+        <!-- Advanced search -->
+        <div class="col-sm-3 advLeftCol">
+            <!--<button class="btn btn-primary" type="button" ng-model="advObj.btnActive.age" uib-btn-checkbox ng-class="{'btn-success':advObj.btnActive.age}">Age</button>-->
+            <section class="btn-group">
+                <button class="btn" type="button" ng-click="advObj.btnColorFunc('ageMin', true);" ng-class="advObj.btnClass.ageMin">Minimum Age</button>
+                <button class="btn" type="button" ng-click="advObj.btnColorFunc('ageMax', true);" ng-class="advObj.btnClass.ageMax">Maximum Age</button>
+            </section>
+            <label>Number of Participants <i class="glyphicon glyphicon-user"></i></label>
+            <section>
+                <button class="btn" type="button" ng-click="advObj.btnColorFunc('cPartMin', true);" ng-class="advObj.btnClass.cPartMin">Min</button>
+                <button class="btn" type="button" ng-click="advObj.btnColorFunc('cPartMax', true);" ng-class="advObj.btnClass.cPartMax">Max</button>
+            </section>
+            <!--<button class="btn btn-primary" type="button" ng-model="advObj.btnActive.gender" uib-btn-checkbox ng-class="{'btn-success':advObj.btnActive.gender}">Gender</button>-->
+            <button class="btn" type="button" ng-click="advObj.btnColorFunc('gender', true);" ng-class="advObj.btnClass.gender">Gender</button>
+
+            <!--<button class="btn btn-primary" type="button" ng-model="advObj.btnActive.approval" uib-btn-checkbox ng-class="{'btn-success':advObj.btnActive.approval}">Approval</button>
+            <button class="btn btn-primary" type="button" ng-model="advObj.btnActive.tags" uib-btn-checkbox ng-class="{'btn-success':advObj.btnActive.tags}">Tags</button>-->
+
+            <button class="btn" type="button" ng-click="advObj.btnColorFunc('approvalReq', true);" ng-class="advObj.btnClass.approvalReq">Approval</button>
+            <button class="btn" type="button" ng-click="advObj.btnColorFunc('tags', true);" ng-class="advObj.btnClass.tags">Tags</button>
+
+            <label>Date <i class="glyphicon glyphicon-calendar"></i></label>
+            <section class="btn-group">
+                <label class="btn btn-primary btnDT" ng-click="advObj.btnColorFunc('dateAfter', true);" ng-class="advObj.btnClass.dateAfter">After</label>
+                <label class="btn btn-primary btnDT" ng-click="advObj.btnColorFunc('dateBefore', true);" ng-class="advObj.btnClass.dateBefore">Before</label>
+            </section>
+            <label>Time Of Day <i class="glyphicon glyphicon-time"></i></label>
+            <section class="btn-group">
+                <label class="btn btn-primary btnDT" ng-click="advObj.btnColorFunc('timeAfter', true);" ng-class="advObj.btnClass.timeAfter">After</label>
+                <label class="btn btn-primary btnDT" ng-click="advObj.btnColorFunc('timeBefore', true);" ng-class="advObj.btnClass.timeBefore">Before</label>
+            </section>
+        </div>
+
+
+        <div class="col-sm-8 advRightCol">
+            <!-- Input: Age -->
+            <section class="minMaxBtns" ng-if="advObj.btnActive.ageMax || advObj.btnActive.ageMin">
+                <label>Age:</label>
+                <input class="form-control" ng-if="advObj.btnActive.ageMax" ng-model="advObj.searchParams.ageMax" ng-change="advObj.btnColorFunc('ageMax', false)" placeholder="Max" />
+                <!--<span>-</span>-->
+                <input class="form-control" ng-if="advObj.btnActive.ageMin" ng-model="advObj.searchParams.ageMin" ng-change="advObj.btnColorFunc('ageMin', false)" placeholder="Min" />
+            </section>
+            <!-- Input: Participants -->
+            <section ng-if="advObj.btnActive.cPartMin || advObj.btnActive.cPartMax">
+                <div class="minMaxBtns">
+                    <label>Participants (currently):</label>
+                    <input class="form-control" ng-if="advObj.btnActive.cPartMax" ng-model="advObj.searchParams.cPartMax" ng-change="advObj.btnColorFunc('cPartMax', false)" placeholder="Max" />
+                    <input class="form-control" ng-if="advObj.btnActive.cPartMin" ng-model="advObj.searchParams.cPartMin" ng-change="advObj.btnColorFunc('cPartMin', false)" placeholder="Min" />
+                </div>
+            </section>
+            <!-- RadioButtons: Gender  -->
+            <section ng-if="advObj.btnActive.gender">
+                <div class="btn-group" id="genderBtns">
+                    <label class="btn btn-primary" ng-model="advObj.searchParams.gender" ng-change="advObj.btnColorFunc('gender', false)" uib-btn-radio="'male'" uib-uncheckable="true">Male only</label>
+                    <label class="btn btn-primary" ng-model="advObj.searchParams.gender" ng-change="advObj.btnColorFunc('gender', false)" uib-btn-radio="'female'" uib-uncheckable="true">Female only</label>
+                    <label class="btn btn-primary" ng-model="advObj.searchParams.gender" ng-change="advObj.btnColorFunc('gender', false)" uib-btn-radio="'all'" uib-uncheckable="true">All only</label>
+                </div>
+            </section>
+            <!-- RadioButtons: ApprovalReq (NOT Radio, change html)  -->
+            <section id="approvalBtns" ng-if="advObj.btnActive.approvalReq">
+                <label class="btn btn-primary" ng-model="advObj.searchParams.approvalReq" ng-change="advObj.btnColorFunc('approvalReq', false)" uib-btn-radio="false" uib-uncheckable="true">
+                    "Free To Join" Events Only
+                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                </label>
+            </section>
+            <!-- Tags -->
+            <section id="tagsRow" ng-if="advObj.btnActive.tags">
+                <!-- Top-Tags -->
+                <h4>Popular Tags</h4>
+                <div class="tagList">
+                    <div class="row" ng-repeat="tag in advObj.tags">
+                        <div class="col-xs-8">
+                            {{tag.name}}
+                        </div>
+                        <div class="col-xs-4">
+                            <button class="btn btn-success btn-xs" type="button" ng-click="advObj.addTag(tag); advObj.btnColorFunc('tags', false);">Add</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Input: CustomTag -->
+                <div>
+                    <!--<label>MyOwnTag</label>-->
+                    <input class="form-control" ng-model="advObj.customTag" placeholder="Create a Tag" />
+                    <button class="btn btn-success btn-sm" type="button" ng-click="advObj.addCustom(advObj.customTag); advObj.btnColorFunc('tags', false);">Add</button>
+                </div>
+                <!-- Added-Tags -->
+                <h4>Your Tags</h4>
+                <div class="tagList">
+                    <div class="row" ng-repeat="name in advObj.searchParams.tags">
+                        <div class="col-xs-8">
+                            {{name}}
+                        </div>
+                        <div class="col-xs-4">
+                            <button class="btn btn-danger btn-xs" type="button" ng-click="advObj.removeTag(name); advObj.btnColorFunc('tags', false);">Del</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Date -->
+            <!--<section class="dtRow" ng-if="advObj.btnActive.dateAfter || advObj.btnActive.dateBefore">-->
+            <section class="dtRow">
+                <label class="betweenLabel" ng-if="advObj.btnActive.dateAfter && advObj.btnActive.dateBefore">Date is Between</label>
+                <div class="advPicker" ng-if="advObj.btnActive.dateAfter">
+                    <div class="form-group">
+                        <div>
+                            <label ng-if="advObj.btnActive.dateAfter && !advObj.btnActive.dateBefore">Date is After</label>
+                            <div>
+                                <p class="input-group">
+                                    <input type="text" class="form-control"
+                                           uib-datepicker-popup="{{'MMM d, y'}}"
+                                           ng-model="advObj.searchParams.dateAfter"
+                                           is-open="afDatePicker.isOpen"
+                                           datepicker-options="afDatePicker.dateOptions"
+                                           ng-required="false"
+                                           close-text="Close"
+                                           alt-input-formats="altInputFormats"
+                                           ng-change="advObj.btnColorFunc('dateAfter', false)" />
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-primary" ng-click="openCalendar('afDatePicker')"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                </p>
+                                <!--<p class="input-group">
+                                    <input type="text" class="form-control"
+                                           datetime-picker="MMM d, y"
+                                           ng-model="advObj.searchParams.dateAfter"
+                                           is-open="afDatePicker.open"
+                                           enable-time="false" />
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-primary" ng-click="openCalendar($event, 'afDatePicker')"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                </p>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="andLabel" ng-if="advObj.btnActive.dateAfter && advObj.btnActive.dateBefore">
+                    <label>-</label>
+                </div>
+                <div class="advPicker" ng-if="advObj.btnActive.dateBefore">
+                    <div class="form-group">
+                        <label ng-if="advObj.btnActive.dateBefore && !advObj.btnActive.dateAfter">Date is Before</label>
+                        <div>
+                            <p class="input-group">
+                                <input type="text" class="form-control"
+                                       uib-datepicker-popup="{{'MMM d, y'}}"
+                                       ng-model="advObj.searchParams.dateBefore"
+                                       is-open="beDatePicker.isOpen"
+                                       datepicker-options="beDatePicker.dateOptions"
+                                       ng-required="false"
+                                       close-text="Close"
+                                       alt-input-formats="altInputFormats"
+                                       ng-change="advObj.btnColorFunc('dateBefore', false)" />
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary" ng-click="openCalendar('beDatePicker')"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                            </p>
+                            <!--<p class="input-group">
+                                <input type="text" class="form-control"
+                                       datetime-picker="MMM d, y"
+                                       ng-model="advObj.searchParams.dateBefore"
+                                       is-open="beDatePicker.open"
+                                       enable-time="false" />
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary" ng-click="openCalendar($event, 'beDatePicker')"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                            </p>-->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Time -->
+            <!--<section class="dtRow" ng-if="advObj.btnActive.timeAfter || advObj.btnActive.timeBefore">-->
+            <section class="dtRow">
+                <label class="betweenLabel" ng-if="advObj.btnActive.timeAfter && advObj.btnActive.timeBefore">Time is Between</label>
+                <div class="advPicker" ng-if="advObj.btnActive.timeAfter">
+                    <div class="form-group">
+                        <div>
+                            <label ng-if="advObj.btnActive.timeAfter && !advObj.btnActive.timeBefore">Time is  After</label>
+                            <uib-timepicker ng-model="advObj.searchParams.timeAfter"
+                                            show-meridian="afTimePicker.timeOptions.ismeridian"
+                                            show-spinners="afTimePicker.timeOptions.showSpinners"
+                                            ng-change="advObj.btnColorFunc('timeAfter', false)">
+
+                            </uib-timepicker>
+                            <!--<p class="input-group">
+                                <input type="text" class="form-control"
+                                       datetime-picker="HH:mm"
+                                       ng-model="advObj.searchParams.timeAfter"
+                                       is-open="afTimePicker.open"
+                                       enable-date="false"
+                                       timepicker-options="afTimePicker.timePickerOptions" />
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary" ng-click="openCalendar($event, 'afTimePicker')"><i class="glyphicon glyphicon-time"></i></button>
+                                </span>
+                            </p>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="andLabel" ng-if="advObj.btnActive.timeAfter && advObj.btnActive.timeBefore">
+                    <label>-</label>
+                </div>
+                <div class="advPicker" ng-if="advObj.btnActive.timeBefore">
+                    <div class="form-group">
+                        <div>
+                            <label ng-if="advObj.btnActive.timeBefore && !advObj.btnActive.timeAfter">Time is Before</label>
+                            <uib-timepicker ng-model="advObj.searchParams.timeBefore"
+                                            show-meridian="beTimePicker.timeOptions.ismeridian"
+                                            show-spinners="befTimePicker.timeOptions.showSpinners"
+                                            ng-change="advObj.btnColorFunc('timeBefore', false)">
+
+                            </uib-timepicker>
+                            <!--<p class="input-group">
+                                <input type="text" class="form-control"
+                                       datetime-picker="HH:mm"
+                                       ng-model="advObj.searchParams.timeBefore"
+                                       is-open="beTimePicker.open"
+                                       enable-date="false"
+                                       timepicker-options="beTimePicker.timePickerOptions" />
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary" ng-click="openCalendar($event, 'beTimePicker')"><i class="glyphicon glyphicon-time"></i></button>
+                                </span>
+                            </p>-->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--<section>
+                <p>advObj.searchParams.dateAfter: <span style="font-weight:600;">{{advObj.searchParams.dateAfter | date: 'dd/MM/yyyy'}}</span></p>
+                <p>advObj.searchParams.dateBefore: <span style="font-weight:600;">{{advObj.searchParams.dateBefore | date: 'dd/MM/yyyy'}}</span></p>
+                <p>advObj.searchParams.timeAfter: <span style="font-weight:600;">{{advObj.searchParams.timeAfter | date: 'HH:mm'}}</span></p>
+                <p>advObj.searchParams.timeBefore: <span style="font-weight:600;">{{advObj.searchParams.timeBefore | date: 'HH:mm'}}</span></p>
+            </section>-->
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <p>Some text in a paragraph here, floating left.</p>
+        <button class="btn btn-primary" type="button" ng-click="clearParams()">Clear All</button>
+        <button class="btn btn-primary" type="button" ng-click="search()">Search</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+    <!--<div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="$close('Modal Result')">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="$dismiss('Dismiss Reason')">Cancel</button>
+    </div>-->
+</div>
+
+
+
+
+<!--<div class="row advancedSearch" ng-if="show_.advanced">
+    <h2>Advanced Search</h2>
+    <div class="col-sm-3">
+
+        <div class="form-group">
+            <input class="form-control" ng-model="advObj.searchParams.ageMin" placeholder="Min Age. . ." />
+            <input class="form-control" ng-model="advObj.searchParams.ageMax" placeholder="Max Age. . . " />
+        </div>
+
+        <div class="form-group">
+            <input class="form-control" ng-model="advObj.searchParams.partMin" placeholder="Part Min. . . " />
+            <input class="form-control" ng-model="advObj.searchParams.partMax" placeholder="Part Max. . . " />
+        </div>
+    </div>
+
+    <div class="col-sm-9">
+        <div class="text-left">
+
+            <label>After:</label>
+            <datetimepicker hour-step="hourStep"
+                            minute-step="minuteStep" ng-model="advObj.searchParams.eventStart" show-meridian="showMeridian"
+                            date-format="{{format}}" date-options="dateOptions"
+                            datepicker-append-to-body="false"
+                            readonly-date="false"
+                            hidden-time="false"
+                            hidden-date="false"
+                            name="datetimepicker"
+                            show-spinners="false"
+                            readonly-time="false"
+                            date-opened="dateOpened">
+            </datetimepicker>
+        </div>
+        <hr />
+        <div class="text-left">
+
+            <div class="btn-group">
+                <label class="btn btn-default" ng-model="advObj.searchParams.gender" uib-btn-radio="'male'">Male only</label>
+                <label class="btn btn-default" ng-model="advObj.searchParams.gender" uib-btn-radio="'female'">Female only</label>
+                <label class="btn btn-default" ng-model="advObj.searchParams.gender" uib-btn-radio="'all'">All</label>
+            </div>
+        </div>
+    </div>
+</div>-->

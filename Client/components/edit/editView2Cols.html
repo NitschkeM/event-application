@@ -1,0 +1,295 @@
+﻿<!-- Should I not add a FORM here? Novalidate?  -->
+<div class="row" id="editRow">
+    <div class="col-sm-12" id="tips">
+        <button class="btn btn-success" type="button" ng-hide="showTips" ng-click="showTips=true">Show Tips</button>
+        <button class="btn btn-warning" type="button" ng-show="showTips" ng-click="showTips=false">Hide Tips</button>
+        <section ng-show="showTips">
+            <h4>Tips:</h4>
+            <ul>
+                <li>More people will find your event if you have less restrictive requirements.</li>
+                <li>You can close your event at any time, meaning no more people can join.</li>
+                <li>If start time or location is not certain, or you have other information you want to give to participants, just include it in the description.</li>
+            </ul>
+        </section>
+    </div>
+    <div class="col-sm-6" id="editLeftCol">
+        <section id="inputName">
+            <label>Title</label>
+            <input class="form-control" ng-model="editObj.currentEvent.name" placeholder="Title of the Event" />
+        </section>
+
+        <section class="row" id="dtRow">
+            <div class="form-group">
+                <label class="control-label">Event Start Time</label>
+                <div>
+                    <p class="input-group">
+                        <input type="text" class="form-control"
+                               uib-datepicker-popup="{{'MMM d, y'}}"
+                               ng-model="editObj.pickers.startDate"
+                               is-open="editObj.pickers.isOpen"
+                               datepicker-options="editObj.pickers.dateOptions"
+                               ng-required="false"
+                               close-text="Close"
+                               alt-input-formats="altInputFormats" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary" ng-click="editObj.pickers.openCalendar()"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <uib-timepicker ng-model="editObj.pickers.startTime"
+                            show-meridian="pickers.timeOptions.ismeridian"
+                            show-spinners="pickers.timeOptions.showSpinners">
+            </uib-timepicker>
+            <button type="button" class="btn btn-default" ng-click="combineDT(editObj.pickers.startDate, editObj.pickers.startTime)">Combine</button>
+            <p>combinedDT: <b>{{combinedDT}}</b></p>
+
+        </section>
+        <section id="genderBtns" class="btn-group">
+            <label class="btn btn-primary" ng-model="editObj.currentEvent.gender" uib-btn-radio="'male'">Male only</label>
+            <label class="btn btn-primary" ng-model="editObj.currentEvent.gender" uib-btn-radio="'female'">Female only</label>
+            <label class="btn btn-primary" ng-model="editObj.currentEvent.gender" uib-btn-radio="'all'">All</label>
+        </section>
+        <section class="minMaxBtns">
+            <label>Age:</label>
+            <input class="form-control" ng-model="editObj.currentEvent.ageMin" placeholder="min" />
+            <input class="form-control" ng-model="editObj.currentEvent.ageMax" placeholder="max" />
+        </section>
+        <section class="minMaxBtns">
+            <label>Participants:</label>
+            <input class="form-control" ng-model="editObj.currentEvent.partMin" placeholder="min" />
+            <input class="form-control" ng-model="editObj.currentEvent.partMax" placeholder="max" />
+        </section>
+        <section id="approvalBtns">
+            <!--<label>Approval Required:</label>
+            <div class="btn-group">-->
+            <label class="btn btn-primary" ng-model="editObj.currentEvent.approvalReq" uib-btn-radio="true">People Can Join Freely</label>
+            <label class="btn btn-primary" ng-model="editObj.currentEvent.approvalReq" uib-btn-radio="false">I Must Accept Their Join Requests</label>
+            <!--<label class="btn btn-primary" ng-model="editObj.currentEvent.approvalReq" uib-btn-radio="false">People Must Send A Join Request</label>-->
+            <!--</div>-->
+        </section>
+        <!-- Description -->
+        <section id="descriptionD">
+            <label>Description</label>
+            <textarea class="form-control" ng-model="editObj.currentEvent.description"></textarea>
+        </section>
+        <section id="imgBtns">
+            <div class="btn-group">
+                <label class="btn btn-primary" ng-model="editObj.useImage" uib-btn-radio="'upload'">Use uploaded image</label>
+                <label class="btn btn-primary" ng-model="editObj.useImage" uib-btn-radio="'default'">Use default image</label>
+                <label class="btn btn-primary" ng-model="editObj.useImage" ng-show="editObj.currentEvent.pictureId" uib-btn-radio="'existing'">Use current image</label>
+            </div>
+        </section>
+        <section ng-show="editObj.useImage === 'default'">
+            <label>
+                <select ng-model="editObj.defaultSelected" ng-options="image.name for image in editObj.defaultImgs"></select>
+            </label>
+        </section>
+        <button type="button" class="btn btn-default" ng-click="logSelected()">Log Selected</button>
+        <section id="imgUpload" ng-show="editObj.useImage === 'upload'">
+            <form name="uploadForm">
+                <button class="btn btn-primary" type="button" ng-model="editObj.file" name="uploadFile"
+                        ngf-multiple="false" ngf-select="true"
+                        ngf-accept="'image/*'" ngf-pattern="'image/*'"
+                        ngf-max-size="20MB" ngf-min-height="100"
+                        ngf-resize="{width: 750, height: 300}">
+                    Select Image
+                </button>
+                <div class="drop-box" ng-model="editObj.file" name="uploadDrop"
+                     ngf-multiple="false" ngf-drop="true" ngf-select="true"
+                     accept="image/*" ngf-pattern="'image/*'"
+                     ngf-max-size="20MB" ngf-min-height="80"
+                     ngf-resize="{width: 750, height: 300}"
+                     ngf-drag-over-class="'dragover'" ngf-allow-dir="true"
+                     ngf-change="fileDropped($file, $files, $event, $rejectedFiles)">
+                    Drop an image here or click to upload
+                </div>
+                <!--<img ngf-thumbnail="editObj.file || '/Client/assets/img/signup_male.png'" ngf-size="{width: 80, height: 80, quality: 0.9}">-->
+                <!-- ngf-no-file-drop: Cool, but not a good fallback -->
+                <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+            </form>
+
+        </section>
+
+        <section class="previewBtns">
+            <button class="btn btn-primary" type="button" ng-model="editObj.panPreview" uib-btn-checkbox>Search Preview</button>
+            <button class="btn btn-primary" type="button" ng-model="editObj.detPreview" uib-btn-checkbox>Detailed Preview</button>
+        </section>
+        <!--<button class="btn btn-success" type="button" ng-model="editObj.panPreview" uib-btn-checkbox ng-class="{'btn-danger':editObj.panPreview}">Search Preview</button>
+        <button class="btn btn-success" type="button" ng-model="editObj.detPreview" uib-btn-checkbox ng-class="{'btn-danger':editObj.detPreview}">Detailed Preview</button>-->
+    </div>
+    <!-- Right Column -->
+    <div class="col-sm-6" id="editRightCol">
+        <!-- Map -->
+        <section><div id="mapE"></div></section>
+        <!-- Tags -->
+        <section id="tagsRow">
+            <!-- Top-Tags -->
+            <h4>Popular Tags</h4>
+            <div class="tagList">
+                <div class="row" ng-repeat="tag in editObj.tags">
+                    <div class="col-xs-8">
+                        {{tag.name}}
+                    </div>
+                    <div class="col-xs-4">
+                        <button class="btn btn-success btn-xs" type="button" ng-click="editObj.addTag(tag)">Add</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Input: CustomTag -->
+            <div>
+                <!--<label>MyOwnTag</label>-->
+                <input class="form-control" ng-model="editObj.customTag" placeholder="Create a Tag" />
+                <button class="btn btn-success btn-sm" type="button" ng-click="editObj.addCustom(editObj.customTag)">Add</button>
+            </div>
+            <!-- Added-Tags -->
+            <h4>Your Tags</h4>
+            <div class="tagList">
+                <div class="row" ng-repeat="tag in editObj.currentEvent.tags">
+                    <div class="col-xs-8">
+                        {{tag.name}}
+                    </div>
+                    <div class="col-xs-4">
+                        <button class="btn btn-danger btn-xs" type="button" ng-click="editObj.removeTag(tag)">Del</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 confirmBtns">
+            <button ng-if="currentPath === '/main/create'" class="btn btn-success" type="button" ng-click="editObj.createEvent(editObj.currentEvent)">Create</button>
+            <button ng-if="currentPath !== '/main/create'" class="btn btn-success" type="button" ng-click="editObj.saveEdit(editObj.currentEvent)">Save</button>
+            <button class="btn btn-danger" type="button" ng-click="editObj.cancelEdit()">Cancel</button>
+        </div>
+    </div>
+
+    <!--<select ng-show="editObj.useImage === 'default'" name="imageSelect" id="imageSelect" ng-model="editObj.defaultSelected">
+        <option ng-repeat="item in editObj.defaultImgs" ng-value={{item}}>{{item.name}}</option>
+    </select>-->
+    <!--<div class="btn-group" uib-dropdown keyboard-nav>
+        <button id="image-dropdown" type="button" class="btn btn-default" uib-dropdown-toggle>
+            Default Images<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" uib-drobdown-menu role="menu" aria-labelledby="image-dropdown">
+            <li role="menuitem"></li>
+        </ul>
+    </div>-->
+    <!-- Events Preview Panel -->
+    <div class="row" id="panPreview" ng-show="editObj.panPreview">
+        <div class="col-sm-9 col-sm-offset-2">
+            <div class="panel panel-primary eventPanel">
+                <a class="panel-heading" ui-sref="details({id: item.eventId})">
+                    <h3 class="panel-title">{{editObj.currentEvent.name || "Name of event"}}<span class="glyphicon glyphicon-info-sign" aria-hidden="true" ng-show="editObj.currentEvent.approvalReq"></span></h3>
+                </a>
+                <div class="panel-body row">
+                    <section class="col-sm-3 hidden-xs">
+                        <div ng-show="editObj.useImage === 'default'"><img ng-src="{{editObj.defaultSelected.imageUrl}}" class="img-responsive" width="106" height="106" alt="No image choosen" /></div>
+                        <!-- Have a descriptive default img, asking user for upload when !file -->
+                        <div ng-show="editObj.useImage === 'upload'"><img ngf-thumbnail="editObj.file || '/Client/assets/img/signup_male.png'" ngf-size="{width: 106, height: 106, quality: 0.9}"></div>
+                        <div ng-show="editObj.useImage === 'existing'"><img ng-src="{{editObj.currentEvent.imageUrl}}" class="img-responsive" width="106" height="106" alt="No image choosen" /></div>
+                        <!--<div ng-show="editObj.useImage === 'existing'"><img ng-src="{{editObj.existingUrl}}" class="img-responsive" width="106" height="106" alt="No image choosen" /></div>-->
+                    </section>
+                    <section class="col-sm-7 col-xs-7">
+                        <div id="onDetailsGender" ng-switch on="editObj.currentEvent.gender">
+                            <p ng-switch-when="male">Male Only</p>
+                            <p ng-switch-when="female">Female Only</p>
+                            <p ng-switch-default></p>
+                        </div>
+                        <div ng-show="editObj.currentEvent.ageMin && editObj.currentEvent.ageMax"><strong>Age:</strong>{{editObj.currentEvent.ageMin}}<strong> - </strong> {{editObj.currentEvent.ageMax}}</div>
+                        <div ng-hide="editObj.currentEvent.ageMin && editObj.currentEvent.ageMax"><strong>Age:</strong>Input age info</div>
+                        <div><strong>Participants:</strong> {{editObj.currentEvent.numberOfParticipants || 1}} (Max: {{editObj.currentEvent.partMax}})</div>
+                        <div><strong>Pending:</strong> {{editObj.currentEvent.numberOfParticipants || 0}}</div>
+                    </section>
+                    <section class="col-sm-2 col-xs-5">
+                        <p id="panelDay">{{editObj.currentEvent.eventStart | date:'EEEE'}}</p>
+                        <p id="panelTime">{{editObj.currentEvent.eventStart | date:'HH:mm'}}</p>
+                        <p id="panelMonth">{{editObj.currentEvent.eventStart | date:'MMMM d'}}</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="detPreview" ng-show="editObj.detPreview">
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- Jumbotron Note: Inside container to NOT extent to edge of screen. Outside to. . .  -->
+                <div class="jumbotron detailsJumbo">
+                    <h2 class="h2">{{editObj.currentEvent.name || "Name of event"}}</h2>
+                    <div>
+                        <!--<div ng-hide="editObj.useImage"><img ng-src="{{editObj.defaultSelected.imageUrl}}" class="img-responsive" width="750" height="300" alt="A default image" /></div>
+                        <div ng-show="editObj.useImage"><img ngf-thumbnail="editObj.file || '/Client/assets/img/signup_male.png'" ngf-size="{width: 750, height: 300, quality: 0.9}"></div>-->
+                        <div ng-show="editObj.useImage === 'default'"><img ng-src="{{editObj.defaultSelected.imageUrl}}" class="img-responsive" width="750" height="300" alt="No image choosen" /></div>
+                        <!-- Have a descriptive default img, asking user for upload when !file -->
+                        <div ng-show="editObj.useImage === 'upload'"><img ngf-thumbnail="editObj.file || '/Client/assets/img/signup_male.png'"></div>
+                        <!--<div ng-show="editObj.useImage === 'upload'"><img ngf-thumbnail="editObj.file || '/Client/assets/img/signup_male.png'" ngf-size="{width: 750, height: 300, quality: 0.9}"></div>-->
+                        <div ng-show="editObj.useImage === 'existing'"><img ng-src="{{editObj.currentEvent.imageUrl}}" class="img-responsive" width="750" height="300" alt="No image choosen" /></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Row -->
+        <div class="row">
+            <!-- LEFT: Col-sm-3 well -->
+            <div class="col-sm-3 well" id="detailsLeftCol">
+                <section class="navOrBack">
+                    <a class="btn btn-default">Find Events</a>
+                    <a class="btn btn-default">My Events</a>
+                </section>
+                <!--<section ng-hide="editObj.currentEvent.open">
+                    <p><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> Event is closed.</p>
+                </section>-->
+                <section id="detailsDT">
+                    <p id="panelMonth">{{editObj.currentEvent.eventStart | date:'MMMM d'}}</p>
+                    <p id="panelDay">{{editObj.currentEvent.eventStart | date:'EEEE'}}</p>
+                    <p id="panelTime">{{editObj.currentEvent.eventStart | date:'HH:mm'}}</p>
+                </section>
+                <section>
+                    <div>
+                        <div class="btn btn-success" ng-hide="editObj.currentEvent.open">Send Request</div>
+                        <div class="btn btn-success" ng-show="editObj.currentEvent.open">Join Event</div>
+                        <!--<button class="btn btn-success" ng-hide="editObj.currentEvent.open">Send Request</button>
+                        <button class="btn btn-success" ng-show="editObj.currentEvent.open">Join Event</button>-->
+                    </div>
+                </section>
+
+                <section id="shortParticipants">
+                    <p>Participants: {{editObj.currentEvent.numberOfParticipants || 1}}</p>
+                    <p>Max: {{editObj.currentEvent.partMax || "Input Max"}}</p>
+                    <img ng-src="/Client/assets/img/signup_male.png" width="40" height="40" alt="Description" />
+                    <img ng-src="/Client/assets/img/signup_male.png" width="40" height="40" alt="Description" />
+                    <img ng-src="/Client/assets/img/signup_male.png" width="40" height="40" alt="Description" />
+                    <div class="btn btn-sm btn-primary">See All</div>
+                    <!--<button class="btn btn-sm btn-primary">See All</button>-->
+                    <div ng-show="editObj.currentEvent.numberOfParticipants">
+                        <p ng-show="editObj.currentEvent.numberOfParticipants < editObj.currentEvent.partMin">(Need {{editObj.currentEvent.partMin - editObj.currentEvent.numberOfParticipants}} more participants)</p>
+                    </div>
+                    <div ng-show="!editObj.currentEvent.numberOfParticipants && editObj.currentEvent.partMin"><p>(Need {{editObj.currentEvent.partMin - 1}} more participants)</p></div>
+                </section>
+
+                <div class="btn btn-default">See Pending</div>
+                <!--<button class="btn btn-default">See Pending</button>-->
+                <section id="detailsAge">
+                    <p ng-show="editObj.currentEvent.ageMin && editObj.currentEvent.ageMax">Age: {{editObj.currentEvent.ageMin}}-{{editObj.currentEvent.ageMax}}</p>
+                    <p ng-hide="editObj.currentEvent.ageMin && editObj.currentEvent.ageMax">Age: Input age info</p>
+                </section>
+                <section id="onDetailsGender" ng-switch on="editObj.currentEvent.gender">
+                    <p ng-switch-when="male">Male Only</p>
+                    <p ng-switch-when="female">Female Only</p>
+                    <p ng-switch-default></p>
+                </section>
+
+            </div>
+            <!-- MIDDLE: Col-sm-7 -->
+            <div class="col-sm-7">
+                <section class="description-map">
+                    <p>{{editObj.currentEvent.description}}</p>
+                    <!--<div id="mapD"></div>-->
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

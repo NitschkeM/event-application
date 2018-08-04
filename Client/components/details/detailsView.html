@@ -1,0 +1,214 @@
+﻿<!-- Jumbotron Note: Inside container to NOT extent to edge of screen. Outside to. . .  -->
+<div class="jumbotron detailsJumbo">
+    <h2 class="h2">{{currentEvent.name}}</h2>
+    <h6>Golden Ratio image?</h6>
+    <div>
+        <img ng-src="{{currentEvent.imageUrl}}" class="img-responsive" ngf-size="{width: 750, height: 300, quality: 0.9}" alt="Description" />
+        <!--<img ng-src="{{currentEvent.imageUrl}}" class="img-responsive" width="1000" height="400" alt="Description" />-->
+        <!--<img ng-src="/Client/assets/img/Modern_floral_background_10to4.jpg" class="img-responsive" width="1000" height="400" alt="Description" />-->
+    </div>
+</div>
+
+<div class="container body-content text-center">
+    <!-- Main Row -->
+    <div class="row">
+        <!-- LEFT: Col-sm-3 well -->
+        <div class="col-sm-3 well" id="detailsLeftCol">
+            <section class="navOrBack">
+                <a ui-sref="mainParent.list" class="btn btn-default">Find Events</a>
+                <a ui-sref="mainParent.userList" class="btn btn-default">My Events</a>
+            </section>
+            <!-- Event Status -->
+            <section>
+                <p ng-show="currentEvent.eventStatus==='closed'"><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> Event Is Closed.</p>
+                <p ng-show="currentEvent.eventStatus==='cancelled'"><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> Event Is Cancelled.</p>
+            </section>
+            <!-- Date and Time -->
+            <section id="detailsDT">
+                <p id="panelMonth">{{currentEvent.eventStart | date:'MMMM d'}}</p>
+                <p id="panelDay">{{currentEvent.eventStart | date:'EEEE'}}</p>
+                <p id="panelTime">{{currentEvent.eventStart | date:'HH:mm'}}</p>
+            </section>
+            <!-- Switch on user Relationship -->
+            <section id="onUserRship" ng-switch on="userRship">
+                <div ng-switch-when="participant"><button class="btn btn-danger" ng-click="joinLeave()">Leave Event</button></div>
+                <div ng-switch-when="pending"><button class="btn btn-warning" ng-click="joinLeave()">Cancel Request</button></div>
+                <div ng-switch-when="creator">
+                    <!--<button class="btn btn-xs btn-danger" ng-click="deleteEvent()">Delete</button>-->
+                    <a ui-sref="mainParent.edit({id: currentEvent.eventId})" class="btn btn-warning">Edit</a>
+                    <!-- Change Status Btns -->
+                    <button class="btn btn-default" ng-hide="currentEvent.eventStatus === 'open'" ng-click="changeStatus('open')">Open Event</button>
+                    <button class="btn btn-danger" ng-hide="currentEvent.eventStatus === 'closed'" ng-click="changeStatus('closed')">Close Event</button>
+                    <button class="btn btn-danger" ng-hide="currentEvent.eventStatus === 'cancelled'" ng-click="changeStatus('cancelled')">Cancel Event</button>
+                </div>
+                <div ng-switch-default>
+                    <button class="btn btn-success" ng-show="currentEvent.approvalReq" ng-click="joinLeave()">Send Request</button>
+                    <button class="btn btn-success" ng-hide="currentEvent.approvalReq" ng-click="joinLeave()">Join Event</button>
+                </div>
+            </section>
+            <!-- Participants -->
+            <section id="shortParticipants">
+                <p>Participants: {{currentEvent.numberOfParticipants}}</p>
+                <p>Max: {{currentEvent.partMax}}</p>
+                <img ng-src="/Client/assets/img/signup_male.png" width="40" height="40" alt="Description" />
+                <img ng-src="/Client/assets/img/signup_male.png" width="40" height="40" alt="Description" />
+                <img ng-src="/Client/assets/img/signup_male.png" width="40" height="40" alt="Description" />
+                <button type="button" class="btn btn-sm btn-primary" ng-click="modal.open(false,'md')">See All</button>
+                <p ng-show="currentEvent.numberOfParticipants < currentEvent.partMin">
+                    (Need {{currentEvent.partMin - currentEvent.numberOfParticipants}} more participants)
+                </p>
+            </section>
+
+            <button class="btn btn-default" ng-click="modal.open(true, 'md')">See Pending</button>
+            <section id="detailsAge">
+                <p>Age: {{currentEvent.ageMin}}-{{currentEvent.ageMax}}</p>
+            </section>
+            <section id="onDetailsGender" ng-switch on="currentEvent.gender">
+                <p ng-switch-when="male">Male Only</p>
+                <p ng-switch-when="female">Female Only</p>
+                <p ng-switch-default></p>
+            </section>
+            <section>
+                <p ng-repeat="tag in currentEvent.tags">{{tag.name}}</p>
+            </section>
+            <!-- MODAL SCOPE TEST -->
+            <section>
+                <p ng-repeat="user in currentEvent.participants">{{user.userName}}</p>
+            </section>
+        </div>
+        <!-- MIDDLE: Col-sm-7 -->
+        <div class="col-sm-7">
+            <section class="description-map">
+                <p>{{currentEvent.description}}</p>
+                <div id="mapD"></div>
+            </section>
+            <!--<div contenteditable="true"
+                 aria-autocomplete="list" aria-expanded="false" aria-haspopup="false" aria-owns="js_l"
+                 class="_5rpu"
+                 role="combobox"
+                 spellcheck="true"
+                 style="outline: medium none; white-space: pre-wrap; word-wrap: break-word;"
+                 aria-describedby="placeholder-9ktei">-->
+            <!-- Hide/Show on userRship -->
+            <section ng-show="userRship === 'participant' || userRship === 'creator'">
+                <!-- NewComment Form -->
+                <div class="row">
+                    <div class="col-sm-12 detailsForm">
+                        <form name="commentForm" novalidate ng-submit="postComment(comment)" role="form" class="clearfix">
+                            <div class="col-sm-12 form-group">
+                                <label class="sr-only" for="commentArea">Write a comment</label>
+                                <textarea class="form-control center-block" name="commentArea" required ng-model="comment.commentText" placeholder="Comment. . . "></textarea>
+                            </div>
+                            <div class="col-xs-1 form-group col-xs-push-8">
+                                <button type="submit" class="btn btn-primary">Post</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- NewComment Form - END -->
+                <!-- Comment List. Repeated -->
+                <ul class="media-list text-left">
+                    <li class="media" ng-repeat="item in currentEvent.comments">
+                        <div class="media-left">
+                            <img ng-src="{{item.imageUrl}}" height="60" width="60" alt="Description">
+                            <!--<img ng-src="/Client/assets/img/signup_male.png" height="60" width="60" alt="Description">-->
+                        </div>
+                        <!-- Media Body -->
+                        <div class="media-body">
+                            <form editable-form name="rowform" onbeforesave="editComment($data, item.commentId)">
+                                <h4 class="media-heading">{{item.posterUserName}}</h4>
+                                <div class="commentText" editable-textarea="item.commentText" e-name="commentText" e-form="rowform" e-required>{{item.commentText}}</div>
+
+                                <!-- Edit/Delete Buttons: Show if: isPoster && Hide on: rowForm.$visible -->
+                                <div ng-show="item.isPoster && !rowform.$visible" style="float:right">
+                                    <button type="button" class="btn btn-default btn-xs" ng-click="rowform.$show()">Edit</button>
+                                    <button type="button" class="btn btn-danger btn-xs" ng-click="deleteComment(item)">Del</button>
+                                </div>
+                                <!-- Save/Cancel Edit Buttons: Show on rowform.$visible -->
+                                <div ng-show="rowform.$visible" style="float:right">
+                                    <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">Save</button>
+                                    <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-warning">Cancel</button>
+                                </div>
+                                <!-- Reply Button: Hide if: isPoster -->
+                                <div ng-hide="item.isPoster" style="float:right">
+                                    <button type="button" class="btn btn-default btn-xs" ng-click="showForm = !showForm">Reply</button>
+                                </div>
+                            </form>
+                            <p style="float:right">{{timeSince(item.postedTime)}} ago</p>
+                            <hr />
+                            <!-- Row_2: ReplyForm -->
+                            <div ng-show="showForm">
+                                <form name="replyForm" novalidate ng-submit="postReply(newReply, item.commentId); showForm = !showForm; newReply={};" role="form" class="clearfix">
+                                    <div class="col-sm-12 form-group">
+                                        <label class="sr-only" for="replyArea">Post Reply</label>
+                                        <textarea class="form-control" name="replyArea" required ng-model="newReply.commentText" placeholder="Comment. . . "></textarea>
+                                    </div>
+                                    <div class="col-sm-12 form-group text-right">
+                                        <button type="submit" class="btn btn-primary btn-sm">Post</button>
+                                        <button type="button" class="btn btn-primary btn-sm" ng-click="showForm = !showForm; newReply={};">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Row_2: ReplyForm - END -->
+                            <!-- Replies: Repeated -->
+                            <div class="media" ng-repeat="reply in item.replies">
+                                <div class="media-left">
+                                    <img ng-src="{{reply.imageUrl}}" height="60" width="60" alt="Description">
+                                    <!--<img ng-src="/Client/assets/img/signup_male.png" height="60" width="60" alt="Description">-->
+                                </div>
+                                <div class="media-body">
+                                    <form editable-form name="editReplyForm" onbeforesave="editReply($data, reply.commentId, item)">
+                                        <h4 class="media-heading">{{reply.posterUserName}}</h4>
+                                        <div class="commentText" editable-textarea="reply.commentText" e-name="commentText" e-form="editReplyForm" e-required>{{reply.commentText}}</div>
+                                        <!-- Edit/Delete Buttons: Show if: isPoster && Hide on: rowForm.$visible -->
+                                        <div ng-show="reply.isPoster && !editReplyForm.$visible" style="float:right">
+                                            <button type="button" class="btn btn-default btn-xs" ng-click="editReplyForm.$show()">Edit</button>
+                                            <button type="button" class="btn btn-danger btn-xs" ng-click="deleteReply(reply, item)">Del</button>
+                                        </div>
+                                        <!-- Save/Cancel Edit Buttons: Show on rowform.$visible -->
+                                        <div ng-show="editReplyForm.$visible" style="float:right">
+                                            <button type="submit" ng-disabled="editReplyForm.$waiting" class="btn btn-default">Save</button>
+                                            <button type="button" ng-disabled="editReplyForm.$waiting" ng-click="editReplyForm.$cancel()" class="btn btn-warning">Cancel</button>
+                                        </div>
+                                    </form>
+                                    <p style="float:right">{{timeSince(reply.postedTime)}} ago</p>
+                                    <hr />
+                                </div>
+                            </div>
+                            <!-- Replies: Repeated - END -->
+                        </div>
+                        <!-- Media Body - END -->
+
+                    </li>
+                </ul>
+                <!-- Comment List. Repeated - END -->
+            </section>
+            <!-- Hide/Show on isParticipant - END -->
+
+        </div>
+        <!-- RIGHT: Col-sm-2 -->
+        <div class="col-sm-2 well bg-danger">
+            <div class="well">
+                <p>ADS</p>
+            </div>
+            <div class="well">
+                <p>ADS</p>
+            </div>
+            <div class="well">
+                <p>ADS</p>
+            </div>
+            <div class="well">
+                <p>ADS</p>
+            </div>
+            <div class="well">
+                <p>ADS</p>
+            </div>
+            <div class="well">
+                <p>ADS</p>
+            </div>
+        </div>
+    </div>
+    <!-- Main Row - END -->
+
+</div>

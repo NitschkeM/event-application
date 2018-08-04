@@ -1,0 +1,76 @@
+﻿<!-- Main Row -->
+<div class="row">
+    <!-- COL-SM-3 -->
+    <div class="col-sm-3 well listLeftCol">
+        <!-- Sort button group -->
+        <label>Sort Events By: </label>
+        <div>
+            <div class="btn-group-sm orderByBtns">
+                <a href="" type="button" class="btn btn-success" ng-click="sort('eventStart')"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> Event Start Time</a>
+                <a href="" type="button" class="btn btn-danger" ng-click="sort('numberOfParticipants')"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Number Of Participants</a>
+                <a href="" type="button" class="btn btn-warning" ng-click="sort('ageMin')">Maximum Age</a>
+                <a href="" type="button" class="btn btn-warning" ng-click="sort('ageMax')">Minimum Age</a>
+                <a href="" type="button" class="btn btn-info" ng-click="sort('name')">Event Name</a>
+                <a href="" type="button" class="btn btn-primary" ng-click="sort('gender')">Gender</a>
+            </div>
+        </div>
+    </div>
+    <!-- COL-SM-7 -->
+    <div class="col-sm-9">
+        <section id="resultMessage" ng-show="list_Info.paging.totalItems">
+            Found: {{list_Info.paging.totalItems}} Events
+        </section>
+        <!-- Pagination -->
+        <uib-pagination ng-model="list_Info.paging.page "
+                        total-items="list_Info.paging.totalItems"
+                        items-per-page="list_Info.paging.itemsPerPage"
+                        ng-change="selectPage()"
+                        max-size="10"
+                        rotate="false"
+                        boundary-links="true">
+        </uib-pagination>
+
+        <!--<div class="panel-heading">
+            <h3 class="panel-title"><a ui-sref="details({id: item.eventId})">{{item.name}}</a></h3>
+        </div>-->
+        <!-- Events Repeat Panel -->
+        <div class="panel panel-primary eventPanel" ng-repeat="item in list_Info.events">
+            <a class="panel-heading" ng-class="{'creatorTrue': list_Info.userId === item.creatorId}" ui-sref="details({id: item.eventId})">
+                <h3 class="panel-title">{{item.name}}</h3>
+            </a>
+            <div class="panel-body row">
+                <section class="col-sm-3 hidden-xs">
+                    <img ng-src="/Client/assets/img/signup_male.png" class="img-responsive" width="106" height="106" alt="Description" />
+                </section>
+                <section class="col-sm-7 col-xs-7">
+                    <div id="onDetailsGender" ng-switch on="item.gender">
+                        <p ng-switch-when="male">Male Only</p>
+                        <p ng-switch-when="female">Female Only</p>
+                        <p ng-switch-default></p>
+                    </div>
+                    <div><strong>Age:</strong>{{item.ageMin}}<strong> - </strong> {{item.ageMax}}</div>
+                    <div><strong>Participants:</strong> {{item.currentPartic}} (Max: {{item.partMax}})</div>
+                    <div><strong>Pending:</strong> {{item.currentPending}}</div>
+                    <div><strong>ApprovalReq:</strong> {{item.approvalReq}}</div>
+                    <div><strong>Rship:</strong> {{item.userRship}}</div>
+                </section>
+                <section class="col-sm-2 col-xs-5">
+                    <p id="panelDay">{{item.eventStart | date:'EEEE'}}</p>
+                    <p id="panelTime">{{item.eventStart | date:'HH:mm'}}</p>
+                    <p id="panelMonth">{{item.eventStart | date:'MMMM d'}}</p>
+                </section>
+            </div>
+        </div>
+        <!-- Events Repeat Panel - END -->
+        <!-- Pagination2 -->
+        <uib-pagination ng-model="list_Info.paging.page "
+                        total-items="list_Info.paging.totalItems"
+                        items-per-page="list_Info.paging.itemsPerPage"
+                        ng-change="selectPage()"
+                        max-size="10"
+                        rotate="false"
+                        boundary-links="true">
+        </uib-pagination>
+    </div>
+</div>
+<!-- Main Row - END -->

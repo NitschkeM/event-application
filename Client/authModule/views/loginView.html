@@ -1,0 +1,14 @@
+﻿
+<!-- *****Add Novalidate? OR: Third party email filter vs my filter? ***** -->
+<div class="container">
+    <div class="col-sm-4 col-sm-offset-4">
+        <form class="form-login" role="form">
+            <input type="text" class="form-control" placeholder="Username" data-ng-model="loginData.userName" required autofocus>
+            <input type="password" class="form-control" placeholder="Password" data-ng-model="loginData.password" required>
+            <button id="loginBtn" class="btn btn-lg btn-info btn-block" type="submit" data-ng-click="login()">Login</button>
+            <div data-ng-hide="message == ''" class="alert alert-danger">
+                {{message}}
+            </div>
+        </form>
+    </div>
+</div>
