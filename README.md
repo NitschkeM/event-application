@@ -1,4 +1,4 @@
 # event-application
 
 
-Application for finding freinds with common interessts in real life.
+Application for finding friends with common interessts in real life.
